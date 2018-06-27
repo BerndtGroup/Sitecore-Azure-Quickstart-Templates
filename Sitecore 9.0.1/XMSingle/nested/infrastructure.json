@@ -18,6 +18,7 @@
     "singleHostingPlanNameTidy": "[toLower(trim(parameters('singleHostingPlanName')))]",
 
     "singleWebAppNameTidy": "[toLower(trim(parameters('singleWebAppName')))]",
+    "singleWebAppQaSlotNameTidy": "[toLower(trim(parameters('singleWebAppQaSlotName')))]",
 
     "searchServiceNameTidy": "[toLower(trim(parameters('searchServiceName')))]",
     "applicationInsightsNameTidy": "[toLower(trim(parameters('applicationInsightsName')))]",
@@ -170,6 +171,12 @@
       "type": "string",
       "minLength": 1,
       "defaultValue": "[concat(parameters('deploymentId'), '-single')]"
+    },
+
+    "singleWebAppQaSlotName": {
+      "type": "string",
+      "minLength": 1,
+      "defaultValue": "[concat(parameters('deploymentId'), '-single-qa')]"
     }
   },
   "resources": [
@@ -213,6 +220,45 @@
         "provider": "[variables('sitecoreTags').provider]",
         "logicalName": "[variables('sitecoreTags').single]"
       }
+    },
+    {
+     "name": "[variables('singleWebAppQaSlotNameTidy')]",
+     "type": "slots",
+     "location": "[resourceGroup().location]",
+     "apiVersion": "2015-08-01",
+     "dependsOn": [
+       "[resourceId('Microsoft.Web/sites', variables('webAppNameTidy'))]"
+     ],
+     "properties": {},
+     "resources": [
+       {
+         "type": "config",
+         "apiVersion": "2015-08-01",
+         "name": "web",
+         "dependsOn": [
+           "[resourceId('Microsoft.Web/sites/slots', variables('webAppNameTidy'), variables('singleWebAppQaSlotNameTidy'))]"
+         ],
+         "properties": {
+           "siteConfig": {
+             "use32BitWorkerProcess": false,
+             "alwaysOn": true,
+             "phpVersion": "",
+             "defaultDocuments": [
+              "index.html"
+             ]
+           }
+         }
+       },
+       {
+         "apiVersion": "[variables('webApiVersion')]",
+         "type": "config",
+         "name": "appsettings",
+         "dependsOn": [
+           "[resourceId('Microsoft.Web/sites/slots', variables('webAppNameTidy'), variables('singleWebAppQaSlotNameTidy'))]"
+         ],
+         "properties": {}
+       }
+     ]
     },
     {
       "type": "Microsoft.Sql/servers",
