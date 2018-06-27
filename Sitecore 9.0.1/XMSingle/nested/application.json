@@ -11,7 +11,8 @@
     "webSqlDatabaseNameTidy": "[toLower(trim(parameters('webSqlDatabaseName')))]",
     "masterSqlDatabaseNameTidy": "[toLower(trim(parameters('masterSqlDatabaseName')))]",
     "formsSqlDatabaseNameTidy": "[toLower(trim(parameters('formsSqlDatabaseName')))]",
-    "singleWebAppNameTidy": "[toLower(trim(parameters('singleWebAppName')))]",
+    "singleWebAppNameTidy": "[toLower(trim(parameters('singleWebAppName')))]",    
+    "singleWebAppQaSlotNameTidy": "[toLower(trim(parameters('singleWebAppQaSlotName')))]",
     "searchServiceNameTidy": "[toLower(trim(parameters('searchServiceName')))]",
     "applicationInsightsNameTidy": "[toLower(trim(parameters('applicationInsightsName')))]"
   },
@@ -125,6 +126,11 @@
       "type": "string",
       "minLength": 1,
       "defaultValue": "[concat(parameters('deploymentId'), '-single')]"
+    },
+    "singleWebAppQaSlotName": {
+      "type": "string",
+      "minLength": 1,
+      "defaultValue": "[concat(parameters('deploymentId'), '-single-qa')]"
     },
     "singleMsDeployPackageUrl": {
       "type": "securestring",
